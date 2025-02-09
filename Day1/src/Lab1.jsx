@@ -14,20 +14,26 @@ export default function Lab1() {
   const [products, setProducts] = useState(list);
 
   function updatePrice(id) {
-    const newPrice = +document.getElementById(`input-${id}`).value;
-    setProducts(
-      products.map((p) => (p.id === id ? { ...p, price: newPrice } : p))
-    );
+    const newPrice = document.getElementById(`input-${id}`).value;
+    const newProducts = structuredClone(products);
+    const product = newProducts.find((p) => p.id === id);
+    product.price = newPrice;
+    setProducts(newProducts);
   }
 
   function deleteProduct(id) {
-    setProducts(products.filter((p) => p.id !== id));
+    const newProducts = structuredClone(products);
+    const product = newProducts.find((p) => p.id === id);
+    newProducts.splice(newProducts.indexOf(product), 1);
+    setProducts(newProducts);
   }
 
   function searchProduct(search) {
-    setProducts(
-      list.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()))
+    const newProducts = structuredClone(list);
+    const filteredProducts = newProducts.filter((p) =>
+      p.title.toLowerCase().includes(search.toLowerCase())
     );
+    setProducts(filteredProducts);
   }
 
   return (
