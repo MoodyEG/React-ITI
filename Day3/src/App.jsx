@@ -1,12 +1,15 @@
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Home from './Home';
 import Categories from './Categories';
 import Login from './Login';
 import Register from './Register';
 import LayOut from './LayOut';
+import LoginGuard from './LoginGuard';
+import Cart from './Cart';
 
 function App() {
   const routes = createBrowserRouter([
@@ -16,11 +19,35 @@ function App() {
       children: [
         {
           path: 'home',
-          element: <Home />,
+          element: (
+            <LoginGuard>
+              <Home />
+            </LoginGuard>
+          ),
+        },
+        {
+          path: '',
+          element: (
+            <LoginGuard>
+              <Home />
+            </LoginGuard>
+          ),
         },
         {
           path: 'categories',
-          element: <Categories />,
+          element: (
+            <LoginGuard>
+              <Categories />
+            </LoginGuard>
+          ),
+        },
+        {
+          path: 'cart',
+          element: (
+            <LoginGuard>
+              <Cart />
+            </LoginGuard>
+          ),
         },
         {
           path: 'login',

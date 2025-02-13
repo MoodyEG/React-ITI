@@ -1,13 +1,16 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { TokenContext } from './Contexts/TokenContext';
 
 export default function Login() {
+  const { setToken } = useContext(TokenContext);
+
   const initialValues = {
-    email: '',
-    password: '',
+    email: 'moody@email.com',
+    password: 'Pass@123',
   };
 
   const [apiError, setApiError] = useState(null);
@@ -30,10 +33,10 @@ export default function Login() {
       setApiError(null);
       const res = await axios.post('http://localhost:5124/user/login', values);
       console.log(res);
-      // moody@email.com
-      // Pass@123
 
       if (res.status === 200) {
+        localStorage.setItem('token', res.data.token);
+        setToken(res.data.token);
         navigate('/home');
       }
     } catch (error) {

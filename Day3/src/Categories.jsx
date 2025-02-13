@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import Loader from './Loader';
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -12,6 +14,7 @@ export default function Categories() {
 
   useEffect(() => {
     if (selectedCategory) {
+      setLoading(true);
       fetchProductsByCategory(selectedCategory);
     }
   }, [selectedCategory]);
@@ -28,11 +31,13 @@ export default function Categories() {
       `https://fakestoreapi.com/products/category/${selectedCategory}`
     );
     setProducts(data);
+    setLoading(false);
   };
 
   return (
     <div className="text-white">
       <h1>Categories</h1>
+      {categories.length === 0 && <Loader />}
       <div className="row row-cols-auto d-flex flex-row mx-2 g-3">
         {categories.map((category) => (
           <button
@@ -48,6 +53,7 @@ export default function Categories() {
         <div>
           <h2 className="mt-4">Products in {selectedCategory}</h2>
           <div className="row g-4 mt-4 mx-1">
+            {loading && <Loader />}
             {products.map((product) => (
               <div
                 key={product.id}
