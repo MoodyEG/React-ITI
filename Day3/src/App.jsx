@@ -3,13 +3,15 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home from './Home';
-import Categories from './Categories';
-import Login from './Login';
-import Register from './Register';
+import { lazy, Suspense } from 'react';
 import LayOut from './LayOut';
 import LoginGuard from './LoginGuard';
-import Cart from './Cart';
+
+const Home = lazy(() => import('./Home'));
+const Categories = lazy(() => import('./Categories'));
+const Login = lazy(() => import('./Login'));
+const Register = lazy(() => import('./Register'));
+const Cart = lazy(() => import('./Cart'));
 
 function App() {
   const routes = createBrowserRouter([
@@ -18,44 +20,66 @@ function App() {
       element: <LayOut />,
       children: [
         {
+          // Home
           path: 'home',
           element: (
             <LoginGuard>
-              <Home />
+              <Suspense>
+                <Home />
+              </Suspense>
             </LoginGuard>
           ),
         },
         {
+          // Home
           path: '',
           element: (
             <LoginGuard>
-              <Home />
+              <Suspense>
+                <Home />
+              </Suspense>
             </LoginGuard>
           ),
         },
         {
+          // Categories
           path: 'categories',
           element: (
             <LoginGuard>
-              <Categories />
+              <Suspense>
+                <Categories />
+              </Suspense>
             </LoginGuard>
           ),
         },
         {
+          // Cart
           path: 'cart',
           element: (
             <LoginGuard>
-              <Cart />
+              <Suspense>
+                <Cart />
+              </Suspense>
             </LoginGuard>
           ),
         },
         {
+          // Login
           path: 'login',
-          element: <Login />,
+          element: (
+            <Suspense>
+              <Login />
+            </Suspense>
+          ),
         },
         {
+          // Register
           path: 'register',
-          element: <Register />,
+          element: (
+            <Suspense>
+              <Register />
+            </Suspense>
+          ),
         },
       ],
     },
