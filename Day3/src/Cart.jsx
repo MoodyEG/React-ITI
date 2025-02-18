@@ -1,38 +1,54 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+// import axios from 'axios';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCart, getProducts } from './redux/cartSlice';
+import Loader from './Loader';
 
 export default function Cart() {
-  const [products, setProducts] = useState([]);
+  const dispatch = useDispatch();
+  const { cartItems, loading, products } = useSelector((store) => store.cart);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      const { data } = await axios.get(
-        'https://fakestoreapi.com/products?limit=3'
-      );
-      setProducts(data);
+    dispatch(getCart());
+    dispatch(getProducts());
+  }, [dispatch]);
+
+  const cart = cartItems.map((cartItem) => {
+    const product = products.find(
+      (product) => product.id === cartItem.productId
+    );
+    return {
+      ...product,
+      quantity: cartItem.quantity,
     };
-    fetchProducts();
-  }, []);
+  });
 
   return (
     <div className="container text-white">
-      {products.map((product) => (
-        <div className="row my-3" key={product.id}>
-          <div className="col-md-4">
-            <img
-              src={product.image}
-              alt="Product"
-              style={{ height: '200px' }}
-              className="img-fluid"
-            />
+      {loading ? (
+        <Loader />
+      ) : (
+        cart.map((product) => (
+          <div className="row my-3" key={product.id}>
+            <div className="col-md-4">
+              <img
+                src={product.image}
+                alt="Product"
+                style={{ height: '200px' }}
+                className="img-fluid"
+              />
+            </div>
+            <div className="col-md-8">
+              <h3>{product.title}</h3>
+              <p>{product.description}</p>
+              <div className="d-flex justify-content-between">
+                <span>Price: {product.price}</span>
+                <span>Quantity: {product.quantity}</span>
+              </div>
+            </div>
           </div>
-          <div className="col-md-8">
-            <h3>{product.title}</h3>
-            <p>{product.description}</p>
-            <p>Price: {product.price}</p>
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
