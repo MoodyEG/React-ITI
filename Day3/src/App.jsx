@@ -6,12 +6,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import LayOut from './LayOut';
 import LoginGuard from './LoginGuard';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const Home = lazy(() => import('./Home'));
 const Categories = lazy(() => import('./Categories'));
 const Login = lazy(() => import('./Login'));
 const Register = lazy(() => import('./Register'));
 const Cart = lazy(() => import('./Cart'));
+const queryClient = new QueryClient();
 
 function App() {
   const routes = createBrowserRouter([
@@ -86,7 +88,9 @@ function App() {
   ]);
   return (
     <>
-      <RouterProvider router={routes}></RouterProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={routes}></RouterProvider>
+      </QueryClientProvider>
     </>
   );
 }

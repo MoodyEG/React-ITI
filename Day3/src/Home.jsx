@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Loader from './Loader';
 import { toast, Bounce } from 'react-toastify';
+import { useMutation } from '@tanstack/react-query';
 
 export default function Home() {
   const [allProducts, setProducts] = useState([]);
@@ -9,6 +10,33 @@ export default function Home() {
   const [page, setPage] = useState(1);
 
   const maxPage = Math.ceil(allProducts.length / 4);
+
+  const addToCart = async (productId) => {
+    // eslint-disable-next-line no-unused-vars
+    const response = await axios.post('https://fakestoreapi.com/carts', {
+      productId,
+    });
+  };
+
+  const mutation = useMutation({
+    mutationFn: addToCart,
+  });
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      toast.success('Added to cart', {
+        position: 'bottom-right',
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        progress: undefined,
+        theme: 'dark',
+        transition: Bounce,
+      });
+    }
+  }, [mutation.isSuccess]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -33,29 +61,6 @@ export default function Home() {
     setPage(page);
   }
 
-  const addToCart = async (productId) => {
-    try {
-      const response = await axios.post('https://fakestoreapi.com/carts', {
-        productId,
-      });
-      if (response.status === 200) {
-        toast.success('Added to cart', {
-          position: 'bottom-right',
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: 'dark',
-          transition: Bounce,
-        });
-      }
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
-  };
-
   return (
     <>
       <div className="row g-4 mt-4 mx-1">
@@ -75,7 +80,7 @@ export default function Home() {
               </div>
               <button
                 className="btn btn-primary mt-2"
-                onClick={() => addToCart(product.id)}
+                onClick={() => mutation.mutate(product.id)}
               >
                 Add to Cart
               </button>
